@@ -1,0 +1,31 @@
+name: Build Pipeline
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+env:
+  OUTPUT_FOLDER: "output"
+  
+jobs:
+  pack-library:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository for deployment
+        uses: actions/checkout@v7
+
+      - name: Prepare library package
+        run: |
+          mkdir -p ./${{ env.OUTPUT_FOLDER }}/utils/macros
+          cp -r ./stringify.h ./${{ env.OUTPUT_FOLDER }}/utils/macros/
+
+      - name: Upload library package
+        uses: actions/upload-artifact@v7
+        with:
+            name: library-package
+            path: ./${{ env.OUTPUT_FOLDER }}
+            retention-days: 1
